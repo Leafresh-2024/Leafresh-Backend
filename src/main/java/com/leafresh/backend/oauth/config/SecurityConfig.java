@@ -1,12 +1,6 @@
-package com.leafresh.backend.oauth.config;
-
-import com.leafresh.backend.oauth.security.RestAuthenticationEntryPoint;
-import com.leafresh.backend.oauth.security.TokenAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +9,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +23,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         prePostEnabled = true
 )
 public class SecurityConfig {
+
+    @Value("${app.cors.allowedOrigins}")
+    private String[] allowedOrigins;
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -35,34 +37,44 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.and()) // CORS 설정 적용
+                .cors() // CORS 설정 적용
+                .and()
                 .sessionManagement(sessionManagement ->
-                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT 인증이므로 세션 비활성화
-                .csrf(csrf -> csrf.disable()) // JWT 사용 시 CSRF 비활성화
-                .formLogin(formLogin -> formLogin.disable()) // 폼 로그인 비활성화
-                .httpBasic(httpBasic -> httpBasic.disable()) // HTTP Basic 인증 비활성화
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())
+                .formLogin(formLogin -> formLogin.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(new RestAuthenticationEntryPoint())) // 인증 실패 처리
+                        exceptionHandling.authenticationEntryPoint(new RestAuthenticationEntryPoint()))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/", "/error").permitAll() // 허용할 경로 설정
-                                .requestMatchers("/auth/**","/login","/signup","/ws/**","/ftp/**","/garden-diary/**", "/market").permitAll() // 인증 관련 경로 허용
-                                .requestMatchers("/profile/**","/user/**").authenticated() // 모든 인증된 사용자 접근 허용
+                                .requestMatchers("/", "/error").permitAll()
+                                .requestMatchers("/auth/**","/login","/signup","/ws/**","/ftp/**","/garden-diary/**", "/market").permitAll()
+                                .requestMatchers("/profile/**","/user/**").authenticated()
                                 .requestMatchers("/market/**").hasAnyRole("USER", "ADMIN")
-                                .requestMatchers("/chat/**", "/room/**","/follow/**").hasAnyRole("USER", "ADMIN") // 채팅 관련 엔드포인트 인증 필요
-                                .anyRequest().authenticated()); // 그 외 요청은 인증 필요
+                                .requestMatchers("/chat/**", "/room/**","/follow/**").hasAnyRole("USER", "ADMIN")
+                                .anyRequest().authenticated());
 
-        // Add our custom Token based authentication filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
