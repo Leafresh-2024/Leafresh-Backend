@@ -36,5 +36,5 @@ app:
 
 
   cors:
-   allowedOrigins: https://leafresh-frontend-nine.vercel.app
+   allowedOrigins: *
 
