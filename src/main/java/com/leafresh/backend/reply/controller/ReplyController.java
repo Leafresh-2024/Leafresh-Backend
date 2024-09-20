@@ -40,7 +40,6 @@ public class ReplyController {
         }
 
         ReplyDTO createdDTO = replyService.createReply(id, replyDTO, userPrincipal);
-        System.out.println("댓글등록 dto확인 "+createdDTO);
 
         if (createdDTO != null) {
             return ResponseEntity.ok(createdDTO);
