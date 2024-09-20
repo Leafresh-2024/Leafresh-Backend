@@ -2,10 +2,17 @@ package com.leafresh.backend.todo.model;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class ToDoDTO {
 
+
 	private Integer todoId;
+
+	@NotBlank(message = "할 일을 입력하세요! ")
 	private String todoContent;
+	@NotNull(message = "날짜를 입력하세요!")
 	private LocalDate todoSelectedDate;
 	private Integer userId;
 
@@ -13,6 +20,7 @@ public class ToDoDTO {
 	}
 
 	public ToDoDTO(Integer todoId, String todoContent, LocalDate todoSelectedDate, Integer userId) {
+
 		this.todoId = todoId;
 		this.todoContent = todoContent;
 		this.todoSelectedDate = todoSelectedDate;

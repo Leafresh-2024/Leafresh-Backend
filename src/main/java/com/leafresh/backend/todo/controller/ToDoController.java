@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.leafresh.backend.todo.model.ToDoDTO;
 import com.leafresh.backend.todo.model.ToDoEntity;
@@ -28,7 +29,6 @@ public class ToDoController {
 	public ToDoController(ToDoService toDoService) {
 		this.toDoService = toDoService;
 	}
-
 
 
 	// 오늘날짜 + userID 기준으로 보여준다.
@@ -64,12 +64,23 @@ public class ToDoController {
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> addTodo(@RequestBody ToDoDTO toDoDTO) {
 
-		toDoService.addTodo(toDoDTO);
+	try{
+		// 서비스 계층에서 검증 및 할 일 추가
+		ToDoEntity savedTodo = toDoService.addTodo(toDoDTO);
+
+		// 응답생성
 		Map<String, Object> response = new HashMap<>();
 		response.put("todoIndex", toDoDTO);
 
 		return ResponseEntity.ok(response);
 
+		} catch (ResponseStatusException e) {
+			Map<String, Object> errorResponse = new HashMap<>();
+			errorResponse.put("error", e.getMessage());
+
+			return ResponseEntity.status(e.getStatusCode()).body(errorResponse);
+
+		}
 	}
 
 
@@ -79,6 +90,14 @@ public class ToDoController {
 		Integer todoId = (Integer) payload.get("todoId"); // todoId를 Integer로 받음
 		int action = (int) payload.get("action");  // action 추출
 		Map<String, Object> response = new HashMap<>();
+
+
+		if (todoId == null) {
+			response.put("status", "failed");
+			response.put("message", "todoId가 없습니다.");
+			return ResponseEntity.badRequest().body(response);  // 400 Bad Request 반환
+		}
+
 
 
 		if (action == 0) {
@@ -97,11 +116,16 @@ public class ToDoController {
 
 
 
-
 	}
 
-
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
