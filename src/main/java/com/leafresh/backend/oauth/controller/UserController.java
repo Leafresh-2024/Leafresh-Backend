@@ -31,6 +31,17 @@ public class UserController {
         this.authenticationManager = authenticationManager;
     }
 
+    // 유저의 고유id번호로 작성자정보를 조회함
+    @GetMapping("/userinfo-id")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getUserInfoById(@RequestParam Integer userId) {
+        if (userId == null) {
+            return ResponseEntity.status(400).body("사용자가 존재하지 않습니다.");
+        }
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "userId", userId));
+        return ResponseEntity.ok(user);
+    }
+
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public User getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
@@ -39,9 +50,13 @@ public class UserController {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
     }
 
+    // 유저의 email로 작성자정보를 조회함
     @GetMapping("/info-market")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> getUserProfileByEmail(@RequestParam String email) {
+    public ResponseEntity<?> getUserProfileByEmail(@RequestParam String email) {
+        if (email == null) {
+            return ResponseEntity.status(400).body("사용자가 존재하지 않습니다.");
+        }
         User user = userRepository.findByUserMailAdress(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
         return ResponseEntity.ok(user);
