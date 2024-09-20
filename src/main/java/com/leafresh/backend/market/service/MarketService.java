@@ -4,6 +4,7 @@ import com.leafresh.backend.market.model.dto.MarketDTO;
 import com.leafresh.backend.market.model.entity.MarketEntity;
 import com.leafresh.backend.market.model.entity.VisibleScope;
 import com.leafresh.backend.market.repository.MarketRepository;
+import com.leafresh.backend.oauth.exception.ResourceNotFoundException;
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.repository.UserRepository;
 import com.leafresh.backend.oauth.security.CurrentUser;
@@ -197,4 +198,14 @@ public class MarketService {
             System.out.println("게시글이 존재하지 않습니다.");
         }
     }
+
+    @Transactional
+    public Long countSales(String nickname) {
+        User user = userRepository.findByUserNickname(nickname)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "nickname", nickname));
+
+        // 유저 이메일을 기반으로 마켓 글 수 카운트
+        return marketRepository.countByUserEmail(user.getUserMailAdress());
+    }
+
 }
