@@ -11,6 +11,7 @@ import com.leafresh.backend.oauth.repository.UserRepository;
 import com.leafresh.backend.oauth.security.UserPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -68,9 +69,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public ResponseEntity<?> registerUser(@Valid SignUpRequest signUpRequest) {
         if (userRepository.existsByUserMailAdress(signUpRequest.getEmail())) {
-            throw new BadRequestException("이미 사용 중인 이메일입니다.");
-        }else if (userRepository.existsByUserNickname(signUpRequest.getNickname())) {
-            throw new BadRequestException("이미 사용 중인 닉네임입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "이미 사용 중인 이메일입니다."));
+        } else if (userRepository.existsByUserNickname(signUpRequest.getNickname())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ApiResponse(false, "이미 사용 중인 닉네임입니다."));
         }
 
         try {

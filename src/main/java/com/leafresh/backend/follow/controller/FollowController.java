@@ -23,9 +23,9 @@ public class FollowController {
 
     // 팔로우 상태 확인 API
     @GetMapping("/status")
-    public ResponseEntity<?> getFollowStatus(@CurrentUser UserPrincipal currentUser, @RequestParam String followingNickname) {
-        boolean isFollowing = followService.isFollowing(currentUser.getUserId(), followingNickname);
-        return ResponseEntity.ok(new FollowDTO(followingNickname, null, isFollowing));
+    public ResponseEntity<?> getFollowStatus(@CurrentUser UserPrincipal currentUser, @RequestParam String userNickname) {
+        boolean isFollowing = followService.isFollowing(currentUser.getUserId(), userNickname);
+        return ResponseEntity.ok(new FollowDTO(userNickname, null, isFollowing));
     }
 
     // 팔로우 추가 API
