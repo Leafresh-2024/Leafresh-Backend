@@ -53,7 +53,6 @@ public class ReplyService {
                 .replyStatus(true) // 초기에 댓글 등록시에는 true로 세팅
                 .build();
         replyRepository.save(entity);
-        System.out.println("댓글 추가되었는지 확인: " + entity);
 
         if (entity != null) {
             ReplyDTO savedDTO = new ReplyDTO();
