@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -77,6 +78,14 @@ public class AuthController {
     public ResponseEntity<?> logoutUser() {
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok(new ApiResponse(true, "사용자가 성공적으로 로그아웃되었습니다."));
+    }
+
+    @GetMapping("/checkNickname")
+    public ResponseEntity<?> checkNicknameDuplicate(@RequestParam String nickname) {
+        Boolean isNicknameDuplicate = userRepository.existsByUserNickname(nickname);
+
+        // Response에 exists 필드로 중복 여부 반환
+        return ResponseEntity.ok(Collections.singletonMap("exists", isNicknameDuplicate));
     }
 
     @PostMapping("/check-token")

@@ -7,28 +7,28 @@ import jakarta.validation.constraints.Size;
 
 public class SignUpRequest {
 
-    @NotBlank
-    @Size(max = 6)  // 이름의 최대 길이 제한
+    @NotBlank(message = "이름은 필수 입력 사항입니다.")
+    @Size(max = 6, message = "이름은 최대 6자까지 입력 가능합니다.")
     private String name;
 
-    @NotBlank
-    @Size(max = 40)
-    @Email  // 유효한 이메일 주소 검증
+    @NotBlank(message = "이메일은 필수 입력 사항입니다.")
+    @Size(max = 40, message = "이메일은 최대 40자까지 입력 가능합니다.")
+    @Email(message = "유효한 이메일 주소를 입력하세요.")
     private String email;
 
-    @NotBlank
-    @Size(min = 6, max = 20)  // 비밀번호의 길이 제한
+    @NotBlank(message = "비밀번호는 필수 입력 사항입니다.")
+    @Size(min = 6, max = 20, message = "비밀번호는 6자 이상, 20자 이하로 입력해야 합니다.")
     private String password;
 
-    @NotBlank
-    @Size(max = 15)  // 닉네임의 최대 길이 제한
-    private String nickname;  // 필드명 수정
+    @NotBlank(message = "닉네임은 필수 입력 사항입니다.")
+    @Size(max = 15, message = "닉네임은 최대 15자까지 입력 가능합니다.")
+    private String nickname;
 
-    @NotBlank
-    @Pattern(regexp = "^[0-9]{10,11}$", message = "유효한 전화번호를 입력하세요.")  // 전화번호 유효성 검사
-    private String phoneNumber;  // 전화번호를 String 타입으로 유지
+    @NotBlank(message = "전화번호는 필수 입력 사항입니다.")
+    @Pattern(regexp = "^[0-9]{10,11}$", message = "전화번호는 10~11자리 숫자로 입력해야 합니다.")
+    private String phoneNumber;
 
-    private String imageUrl;  // 이미지 URL 필드, 길이 제한 없음
+    private String imageUrl;
 
     private boolean isTermsAgreement;
 
