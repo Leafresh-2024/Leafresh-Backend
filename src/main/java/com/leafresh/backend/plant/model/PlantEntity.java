@@ -26,16 +26,25 @@ public class PlantEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "user_Id")
+    private Integer userID;
+
+    @Column(name = "user_nickname")
+    private String userNickName;
+
     public PlantEntity() {
     }
 
-    public PlantEntity(Long id, String plantName, String plantType, LocalDate registrationDate, String plantDescription, String imageUrl) {
+    public PlantEntity(Long id, String plantName, String plantType, LocalDate registrationDate, String plantDescription,
+        String imageUrl, Integer userID, String userNickName) {
         this.id = id;
         this.plantName = plantName;
         this.plantType = plantType;
         this.registrationDate = registrationDate;
         this.plantDescription = plantDescription;
         this.imageUrl = imageUrl;
+        this.userID = userID;
+        this.userNickName = userNickName;
     }
 
     public Long getId() {
@@ -86,15 +95,33 @@ public class PlantEntity {
         this.imageUrl = imageUrl;
     }
 
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
+    }
+
+    public String getUserNickName() {
+        return userNickName;
+    }
+
+    public void setUserNickName(String userNickName) {
+        this.userNickName = userNickName;
+    }
+
     @Override
     public String toString() {
         return "PlantEntity{" +
-                "id=" + id +
-                ", plantName='" + plantName + '\'' +
-                ", plantType='" + plantType + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", plantDescription='" + plantDescription + '\'' +
-                ", imageUrl='" + imageUrl + '\'' +
-                '}';
+            "id=" + id +
+            ", plantName='" + plantName + '\'' +
+            ", plantType='" + plantType + '\'' +
+            ", registrationDate=" + registrationDate +
+            ", plantDescription='" + plantDescription + '\'' +
+            ", imageUrl='" + imageUrl + '\'' +
+            ", userID=" + userID +
+            ", userNickName='" + userNickName + '\'' +
+            '}';
     }
 }

@@ -28,6 +28,14 @@ public class PlantController {
         }
     }
 
+    @GetMapping("/plants/user/{userNickname}")
+    public ResponseEntity<List<PlantDTO>> getPlantsByUserNickname(@PathVariable String userNickname) {
+        List<PlantDTO> plants = plantService.getPlantsByUserNickname(userNickname);
+        if (plants.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  // 해당 닉네임에 식물이 없을 경우 404 반환
+        }
+        return new ResponseEntity<>(plants, HttpStatus.OK);
+    }
 
     @GetMapping("/plants")
     public ResponseEntity<List<PlantDTO>> getAllPlants() {

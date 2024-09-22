@@ -18,7 +18,14 @@ public class PlantService {
     private PlantRepository plantRepository;
 
     public PlantDTO savePlant(PlantDTO plantDTO) throws IOException {
+        // 로그 추가
+        System.out.println("UserId: " + plantDTO.getUserId());
+        System.out.println("UserNickname: " + plantDTO.getUserNickname());
+
+
         PlantEntity plantEntity = new PlantEntity();
+        plantEntity.setUserID(plantDTO.getUserId());
+        plantEntity.setUserNickName(plantDTO.getUserNickname());
         plantEntity.setPlantName(plantDTO.getPlantName());
         plantEntity.setPlantType(plantDTO.getPlantType());
         plantEntity.setRegistrationDate(plantDTO.getRegistrationDate());
@@ -33,6 +40,16 @@ public class PlantService {
         return plantRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+
+    // 유저 Nickname 별로 가져온다 식물정보를
+    public List<PlantDTO> getPlantsByUserNickname(String userNickname) {
+        List<PlantEntity> plantEntities = plantRepository.findByUserNickName(userNickname);
+        return plantEntities.stream()
+            .map(this::convertToDTO) // plantEntity를 plantDto 로 변환
+            .toList();
+
     }
 
     public Optional<PlantDTO> getPlantById(Long id) {
@@ -57,6 +74,8 @@ public class PlantService {
 
     private PlantDTO convertToDTO(PlantEntity plantEntity) {
         PlantDTO dto = new PlantDTO();
+        dto.setUserId(plantEntity.getUserID());
+        dto.setPlantName(plantEntity.getPlantName());
         dto.setId(plantEntity.getId());
         dto.setPlantName(plantEntity.getPlantName());
         dto.setPlantType(plantEntity.getPlantType());
@@ -65,4 +84,9 @@ public class PlantService {
         dto.setImageUrl(plantEntity.getImageUrl());
         return dto;
     }
+
+
+
+
+
 }
