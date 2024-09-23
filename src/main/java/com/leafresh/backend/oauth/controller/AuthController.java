@@ -1,14 +1,12 @@
 
 package com.leafresh.backend.oauth.controller;
 
-import com.leafresh.backend.oauth.exception.BadRequestException;
-import com.leafresh.backend.oauth.model.User;
+import com.leafresh.backend.common.exception.BadRequestException;
 import com.leafresh.backend.oauth.payload.ApiResponse;
 import com.leafresh.backend.oauth.payload.AuthResponse;
 import com.leafresh.backend.oauth.payload.LoginRequest;
 import com.leafresh.backend.oauth.payload.SignUpRequest;
 import com.leafresh.backend.oauth.repository.UserRepository;
-import com.leafresh.backend.oauth.security.CurrentUser;
 import com.leafresh.backend.oauth.security.UserPrincipal;
 import com.leafresh.backend.oauth.service.CustomUserDetailsService;
 import com.leafresh.backend.oauth.service.TokenProvider;

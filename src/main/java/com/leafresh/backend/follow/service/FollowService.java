@@ -6,7 +6,7 @@ import com.leafresh.backend.follow.repository.FollowRepository;
 import com.leafresh.backend.ftp.service.FtpImgLoaderUtil2;
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.repository.UserRepository;
-import com.leafresh.backend.oauth.exception.ResourceNotFoundException;
+import com.leafresh.backend.common.exception.ResourceNotFoundException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

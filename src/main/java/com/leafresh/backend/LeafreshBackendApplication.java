@@ -7,10 +7,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
 @EnableConfigurationProperties(AppProperties.class)
-public class ReafreshBackendApplication {
-
+public class LeafreshBackendApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ReafreshBackendApplication.class, args);
+        SpringApplication.run(LeafreshBackendApplication.class, args);
     }
 
 }
