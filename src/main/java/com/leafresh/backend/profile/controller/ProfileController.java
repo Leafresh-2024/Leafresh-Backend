@@ -1,6 +1,5 @@
 package com.leafresh.backend.profile.controller;
 
-import com.leafresh.backend.oauth.exception.ResourceNotFoundException;
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.repository.UserRepository;
 import com.leafresh.backend.oauth.security.CurrentUser;

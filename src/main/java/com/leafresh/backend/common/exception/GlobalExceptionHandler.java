@@ -1,4 +1,4 @@
-package com.leafresh.backend.oauth.exception;
+package com.leafresh.backend.common.exception;
 
 import com.leafresh.backend.oauth.payload.ApiResponse;
 import org.springframework.http.ResponseEntity;

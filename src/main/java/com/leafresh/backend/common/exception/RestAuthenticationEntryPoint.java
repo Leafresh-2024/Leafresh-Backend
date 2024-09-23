@@ -1,4 +1,4 @@
-package com.leafresh.backend.oauth.exception;
+package com.leafresh.backend.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +10,6 @@ import java.io.IOException;
 
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
-
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
