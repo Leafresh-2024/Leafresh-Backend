@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Builder(toBuilder = true)
+@Builder(toBuilder = true).Default
 public class FeedDTO {
 
 	private Integer feedId;
