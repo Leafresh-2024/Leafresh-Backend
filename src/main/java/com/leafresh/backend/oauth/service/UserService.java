@@ -25,4 +25,19 @@ public class UserService implements UserServiceImpl {
     public Optional<User> findByUserNickname(String userNickname) {
         return userRepository.findByUserNickname(userNickname);
     }
+
+    @Override
+    public Optional<User> findByUserMailAdress(String userMailAdress) {
+        return userRepository.findByUserMailAdress(userMailAdress);
+    }
+
+    @Override
+    public Boolean existsByUserMailAdress(String userMailAdress) {
+        return userRepository.existsByUserMailAdress(userMailAdress);
+    }
+
+    @Override
+    public Boolean existsByUserNickname(String userNickname) {
+        return userRepository.existsByUserNickname(userNickname);
+    }
 }

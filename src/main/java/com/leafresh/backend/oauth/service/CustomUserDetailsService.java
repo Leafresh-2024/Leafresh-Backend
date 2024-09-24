@@ -70,7 +70,9 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (userRepository.existsByUserMailAdress(signUpRequest.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "이미 사용 중인 이메일입니다."));
-        } else if (userRepository.existsByUserNickname(signUpRequest.getNickname())) {
+        }
+
+        if (userRepository.existsByUserNickname(signUpRequest.getNickname())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "이미 사용 중인 닉네임입니다."));
         }
