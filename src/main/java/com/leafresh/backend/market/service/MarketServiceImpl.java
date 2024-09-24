@@ -4,7 +4,7 @@ import com.leafresh.backend.market.model.dto.MarketDTO;
 import com.leafresh.backend.market.model.entity.MarketEntity;
 import com.leafresh.backend.market.model.entity.VisibleScope;
 import com.leafresh.backend.market.repository.MarketRepository;
-import com.leafresh.backend.oauth.exception.ResourceNotFoundException;
+import com.leafresh.backend.common.exception.ResourceNotFoundException;
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.security.CurrentUser;
 import com.leafresh.backend.oauth.security.UserPrincipal;
