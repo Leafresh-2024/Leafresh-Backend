@@ -15,16 +15,16 @@ public class MarketEntity {
     @Column(name = "market_id")
     private Integer marketId;
 
-    @Column(name = "maket_category")
+    @Column(name = "maket_category", nullable = false)
     private String marketCategory;
 
-    @Column(name = "market_title")
+    @Column(name = "market_title", nullable = false)
     private String marketTitle;
 
-    @Column(name = "market_content")
+    @Column(name = "market_content", nullable = false)
     private String marketContent;
 
-    @Column(name = "market_image")
+    @Column(name = "market_image", nullable = false)
     private String marketImage;
 
     @Column(name = "market_created_at")
@@ -39,10 +39,10 @@ public class MarketEntity {
     @UpdateTimestamp
     private LocalDateTime marketComplatedAt; // 분양 완료일자
 
-    @Column(name = "market_status")
+    @Column(name = "market_status", nullable = false)
     private boolean marketStatus; // 분양중인지 분양완료인지를 구분하는 상태
 
-    @Column(name = "market_visible_scope")
+    @Column(name = "market_visible_scope", nullable = false)
     private VisibleScope marketVisibleScope; // 게시글 공개 범위 (전체공개, 팔로워 공개, 비공개, 삭제된 게시글)
 
     @Column(name = "user_email")
