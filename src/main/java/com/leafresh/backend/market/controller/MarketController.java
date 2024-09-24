@@ -1,20 +1,16 @@
 package com.leafresh.backend.market.controller;
 
 import com.leafresh.backend.market.model.dto.MarketDTO;
-import com.leafresh.backend.market.model.entity.VisibleScope;
-import com.leafresh.backend.market.service.MarketService;
-import com.leafresh.backend.oauth.exception.ResourceNotFoundException;
-import com.leafresh.backend.oauth.model.User;
+import com.leafresh.backend.market.service.MarketServiceImpl;
 import com.leafresh.backend.oauth.security.CurrentUser;
 import com.leafresh.backend.oauth.security.UserPrincipal;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.coyote.Response;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,51 +19,24 @@ import java.util.Map;
 @RestController
 @RequestMapping("/market")
 public class MarketController {
-    private MarketService marketService;
+    private MarketServiceImpl marketServiceImpl;
 
     @Autowired
-    public MarketController(MarketService marketService) {
-        this.marketService = marketService;
+    public MarketController(MarketServiceImpl marketServiceImpl) {
+        this.marketServiceImpl = marketServiceImpl;
     }
 
     @GetMapping
     public List<MarketDTO> getAllMarkets() {
-        return marketService.allMarketList();
+        return marketServiceImpl.allMarketList();
     }
 
     @PostMapping("/addpost")
-    public ResponseEntity<?> create(
-            @RequestParam("category") String category,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content,
-            @RequestParam("image") String image,
-            @RequestParam("visibleScope") VisibleScope visibleScope,
-            @CurrentUser UserPrincipal userPrincipal){
+    public ResponseEntity<?> create(@Valid @RequestBody MarketDTO marketDTO, @CurrentUser UserPrincipal userPrincipal){
+        System.out.println("컨트롤러호출");
+        System.out.println(marketDTO);
 
-        if (category == null || category.isEmpty()){
-            return ResponseEntity.status(415).body("카테고리를 선택해주세요.");
-        }
-        if (title == null || title.isEmpty()){
-            return ResponseEntity.status(415).body("제목을 입력해주세요.");
-        }
-        if (content == null || content.isEmpty()){
-            return ResponseEntity.status(415).body("내용을 입력해주세요.");
-        }
-        if (image == null || image.isEmpty()){
-            return ResponseEntity.status(415).body("사진을 등록해주세요.");
-        }
-        if (visibleScope == null || image.isEmpty()){
-            return ResponseEntity.status(415).body("공개범위를 선택해주세요.");
-        }
-
-        MarketDTO marketDTO = new MarketDTO();
-        marketDTO.setMarketCategory(category);
-        marketDTO.setMarketTitle(title);
-        marketDTO.setMarketContent(content);
-        marketDTO.setMarketImage(image);
-        marketDTO.setMarketVisibleScope(visibleScope);
-
-        MarketDTO createdDTO = marketService.createPost(marketDTO, userPrincipal);
+        MarketDTO createdDTO = marketServiceImpl.createPost(marketDTO, userPrincipal);
 
         if (createdDTO != null) { // 게시글이 잘 저장되었으면
             return ResponseEntity.ok(createdDTO);
@@ -85,7 +54,7 @@ public class MarketController {
             return ResponseEntity.status(400).body(response);
         }
 
-        MarketDTO findDTO = marketService.detailPost(id);
+        MarketDTO findDTO = marketServiceImpl.detailPost(id);
 
         if (findDTO != null) {
             response.put("post", findDTO);
@@ -98,40 +67,23 @@ public class MarketController {
 
     @PutMapping("/modify/{id}")
     public ResponseEntity<?> modify (
-            @RequestParam("category") String category,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content,
-            @RequestParam("image") String image,
-            @RequestParam("visibleScope") VisibleScope visibleScope,
-            @RequestParam("status") Boolean status,
+            @Valid @RequestBody MarketDTO marketDTO,
             @PathVariable Integer id,
             @CurrentUser UserPrincipal userPrincipal){
 
-        if (category == null || category.isEmpty()){
-            return ResponseEntity.status(415).body("카테고리를 선택해주세요.");
-        }
-        if (title == null || title.isEmpty()){
-            return ResponseEntity.status(415).body("제목을 입력해주세요.");
-        }
-        if (content == null || content.isEmpty()){
-            return ResponseEntity.status(415).body("내용을 입력해주세요.");
-        }
-        if (image == null || image.isEmpty()){
-            return ResponseEntity.status(415).body("사진을 등록해주세요.");
-        }
-        if (visibleScope == null || image.isEmpty()){
-            return ResponseEntity.status(415).body("공개범위를 선택해주세요.");
+        System.out.println("수정컨트롤핸들러");
+        System.out.println(marketDTO);
+
+
+        if(id <= 0 || id == null) {
+            return ResponseEntity.status(500).body("수정할 게시글이 없습니다.");
         }
 
-        MarketDTO marketDTO = new MarketDTO();
-        marketDTO.setMarketCategory(category);
-        marketDTO.setMarketTitle(title);
-        marketDTO.setMarketContent(content);
-        marketDTO.setMarketImage(image);
-        marketDTO.setMarketVisibleScope(visibleScope);
-        marketDTO.setMarketStatus(status);
+        if (marketDTO == null) {
+            return ResponseEntity.status(500).body("수정하려는 부분을 다시 작성해주세요.");
+        }
 
-        MarketDTO modifyDTO = marketService.modifyPost(marketDTO, userPrincipal, id);
+        MarketDTO modifyDTO = marketServiceImpl.modifyPost(marketDTO, userPrincipal, id);
 
         if (modifyDTO != null) { // 게시글이 잘 저장되었으면
             return ResponseEntity.ok(modifyDTO);
@@ -142,7 +94,7 @@ public class MarketController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@CurrentUser UserPrincipal userPrincipal, @PathVariable Integer id){
-        int result = marketService.deletePost(userPrincipal, id);
+        int result = marketServiceImpl.deletePost(userPrincipal, id);
 
         if (result == 0) { // 데이터가 잘 삭제되었으면
             return ResponseEntity.status(200).body("게시글 삭제가 완료되었습니다.");
@@ -156,7 +108,7 @@ public class MarketController {
         Boolean marketStatus = requestBody.get("status");
 
         try {
-            marketService.updateMarketStatus(id, marketStatus);
+            marketServiceImpl.updateMarketStatus(id, marketStatus);
             Map<String, String> response = new HashMap<>();
             response.put("message", "상태가 업데이트되었습니다.");
             return ResponseEntity.ok(response);
@@ -170,7 +122,7 @@ public class MarketController {
     @GetMapping("/sales-count")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getSalesCount(@RequestParam String nickname) {
-        Long saleCount = marketService.countSales(nickname);
+        Long saleCount = marketServiceImpl.countSales(nickname);
         return ResponseEntity.ok(saleCount);
     }
 
