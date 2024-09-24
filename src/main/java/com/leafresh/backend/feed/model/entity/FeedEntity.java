@@ -22,7 +22,7 @@ import lombok.*;
 @Table(name = "feed")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)  // toBuilder 옵션 추가
+@Builder(toBuilder = true).Default  // toBuilder 옵션 추가
 @Getter
 public class FeedEntity {
 
