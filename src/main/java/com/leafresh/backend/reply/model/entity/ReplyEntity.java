@@ -15,13 +15,13 @@ public class ReplyEntity {
     @Column(name = "reply_id")
     private Integer replyId;
 
-    @Column(name = "feed_id")
+    @Column(name = "feed_id", nullable = false)
     private Integer feedId;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private Integer userId;
 
-    @Column(name = "reply_content")
+    @Column(name = "reply_content", nullable = false)
     private String replyContent;
 
     @Column(name = "reply_created_at")
@@ -36,7 +36,7 @@ public class ReplyEntity {
     @UpdateTimestamp
     private LocalDateTime replyDeletedAt;
 
-    @Column(name = "reply_status")
+    @Column(name = "reply_status", nullable = false)
     private boolean replyStatus; // 댓글 삭제되었을때
 
     public ReplyEntity() {

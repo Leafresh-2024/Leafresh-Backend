@@ -15,16 +15,16 @@ public class MarketEntity {
     @Column(name = "market_id")
     private Integer marketId;
 
-    @Column(name = "maket_category")
+    @Column(name = "maket_category", nullable = false)
     private String marketCategory;
 
-    @Column(name = "market_title")
+    @Column(name = "market_title", nullable = false)
     private String marketTitle;
 
-    @Column(name = "market_content")
+    @Column(name = "market_content", nullable = false)
     private String marketContent;
 
-    @Column(name = "market_image")
+    @Column(name = "market_image", nullable = false)
     private String marketImage;
 
     @Column(name = "market_created_at")
@@ -39,14 +39,14 @@ public class MarketEntity {
     @UpdateTimestamp
     private LocalDateTime marketComplatedAt; // 분양 완료일자
 
-    @Column(name = "market_status")
+    @Column(name = "market_status", nullable = false)
     private boolean marketStatus; // 분양중인지 분양완료인지를 구분하는 상태
 
-    @Column(name = "market_visible_scope")
+    @Column(name = "market_visible_scope", nullable = false)
     private VisibleScope marketVisibleScope; // 게시글 공개 범위 (전체공개, 팔로워 공개, 비공개, 삭제된 게시글)
 
-    @Column(name = "user_email")
-    private String userEmail; // 작성자 이메일
+    @Column(name = "user_id")
+    private Integer userId; // 작성자 이메일
 
     public MarketEntity() {
     }
@@ -58,7 +58,7 @@ public class MarketEntity {
         this.marketImage = builder.marketImage;
         this.marketStatus = builder.marketStatus;
         this.marketVisibleScope = builder.marketVisibleScope;
-        this.userEmail = builder.userEmail;
+        this.userId = builder.userId;
     }
 
     public static class Builder{
@@ -68,7 +68,7 @@ public class MarketEntity {
         private String marketImage;
         private Boolean marketStatus;
         private VisibleScope marketVisibleScope;
-        private String userEmail;
+        private Integer userId;
 
         public Builder marketCategory(String marketCategory) {
             this.marketCategory = marketCategory;
@@ -108,8 +108,8 @@ public class MarketEntity {
             return this;
         }
 
-        public Builder userEmail(String userEmail) {
-            this.userEmail = userEmail;
+        public Builder userId(Integer userId) {
+            this.userId = userId;
             return this;
         }
 
@@ -157,8 +157,8 @@ public class MarketEntity {
         this.marketStatus = marketStatus;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getMarketId() {
@@ -201,8 +201,8 @@ public class MarketEntity {
         return marketVisibleScope;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public Integer getUserId() {
+        return userId;
     }
 
     public void setMarketVisibleScope(VisibleScope marketVisibleScope) {
@@ -222,7 +222,7 @@ public class MarketEntity {
                 ", marketComplatedAt=" + marketComplatedAt +
                 ", marketStatus=" + marketStatus +
                 ", marketVisibleScope=" + marketVisibleScope +
-                ", userEmail='" + userEmail + '\'' +
+                ", userId='" + userId + '\'' +
                 '}';
     }
 }
