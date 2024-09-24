@@ -11,7 +11,7 @@ public interface MarketServiceImpl {
     MarketDTO detailPost(Integer id); // 분양글 상세보기
     MarketDTO modifyPost(MarketDTO marketDTO, UserPrincipal userPrincipal, Integer id); // 분양글 수정
     int deletePost(UserPrincipal userPrincipal, Integer id); // 분양글 삭제(상태만 변경할예정)
-    void updateMarketStatus(Integer id, Boolean status); // 분양글 분양중/분양완료 상태
+    int updateMarketStatus(Integer id, Boolean status); // 분양글 분양중/분양완료 상태
     Long countSales(String nickname); // 분양글 수 카운트 (userId기준)
 
 }
