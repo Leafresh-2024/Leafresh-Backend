@@ -64,19 +64,10 @@ public class User {
     @Column(name = "terms_agreement", nullable = false)
     private boolean termsAgreement; // 약관 동의 여부
 
-    @OneToMany(mappedBy = "follower")
-    @JsonIgnore // 순환 참조 방지
-    private List<FollowEntity> followers;
-
-    @OneToMany(mappedBy = "following")
-    @JsonIgnore // 순환 참조 방지
-    private List<FollowEntity> followings;
-
     // 기본 생성자
     public User() {
     }
 
-    // 모든 필드를 포함하는 생성자
     public User(Integer userId, String userName, String userNickname, String userPhoneNumber, String userMailAdress, String userPassword, Date userJoinDate, Date userExitDate, int userReportCount, String userExitReason, UserStatus userStatus, Role role, String imageUrl, boolean termsAgreement) {
         this.userId = userId;
         this.userName = userName;
@@ -204,21 +195,5 @@ public class User {
 
     public void setTermsAgreement(boolean termsAgreement) {
         this.termsAgreement = termsAgreement;
-    }
-
-    public List<FollowEntity> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(List<FollowEntity> followers) {
-        this.followers = followers;
-    }
-
-    public List<FollowEntity> getFollowings() {
-        return followings;
-    }
-
-    public void setFollowings(List<FollowEntity> followings) {
-        this.followings = followings;
     }
 }

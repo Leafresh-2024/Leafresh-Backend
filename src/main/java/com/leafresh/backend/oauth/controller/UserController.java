@@ -1,6 +1,6 @@
 package com.leafresh.backend.oauth.controller;
 
-import com.leafresh.backend.oauth.exception.ResourceNotFoundException;
+import com.leafresh.backend.common.exception.ResourceNotFoundException;
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.payload.ApiResponse;
 import com.leafresh.backend.oauth.repository.UserRepository;
@@ -93,7 +93,6 @@ public class UserController {
         return ResponseEntity.ok(Map.of(
                 "userName", user.getUserName(),
                 "imageUrl", user.getImageUrl(),
-                "followers", user.getFollowers().size(),
                 "userEmail", user.getUserMailAdress()
         ));
     }

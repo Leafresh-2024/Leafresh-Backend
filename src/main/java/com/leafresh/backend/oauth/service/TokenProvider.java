@@ -1,7 +1,7 @@
 package com.leafresh.backend.oauth.service;
 
 import com.leafresh.backend.oauth.config.AppProperties;
-import com.leafresh.backend.oauth.exception.ResourceNotFoundException;
+import com.leafresh.backend.common.exception.ResourceNotFoundException;
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.repository.UserRepository;
 import com.leafresh.backend.oauth.security.UserPrincipal;
