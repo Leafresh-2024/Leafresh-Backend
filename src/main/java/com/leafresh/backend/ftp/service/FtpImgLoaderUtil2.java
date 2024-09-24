@@ -1,14 +1,16 @@
 package com.leafresh.backend.ftp.service;
 
+import com.leafresh.backend.ftp.config.FtpProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.PrintCommandListener;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,12 +22,14 @@ import java.util.UUID;
 @Configuration
 public class FtpImgLoaderUtil2 {
 
-    private String host = "1.214.19.22";
-    private Integer port = 2121;
-    private String user = "lefresh";
-    private String password = "lefresh";
+    private final FtpProperties ftpProperties;
 
-    public FtpImgLoaderUtil2() {}
+    @Autowired
+    public FtpImgLoaderUtil2(FtpProperties ftpProperties) {
+        this.ftpProperties = ftpProperties;
+        log.info("FTP Properties: {}", ftpProperties);  // 주입된 값 로그로 확인
+    }
+
 
     public String uploadFile(File file, String servletPath) throws IOException {
         if (!file.exists()) {
@@ -108,9 +112,9 @@ public class FtpImgLoaderUtil2 {
     }
 
     private boolean connect(FTPClient ftpClient) throws IOException {
-        log.debug("connecting to... {}", host);
+        log.debug("connecting to... {}", ftpProperties.getHost());
         ftpClient.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out), true));
-        ftpClient.connect(host, port);
+        ftpClient.connect(ftpProperties.getHost(), ftpProperties.getPort());
         int reply = ftpClient.getReplyCode();
 
         if (!FTPReply.isPositiveCompletion(reply)) {
@@ -120,7 +124,7 @@ public class FtpImgLoaderUtil2 {
         }
 
         ftpClient.setControlEncoding("UTF-8");
-        return ftpClient.login(user, password);
+        return ftpClient.login(ftpProperties.getUser(), ftpProperties.getPassword());
     }
 
     private void disconnect(FTPClient ftpClient) {
@@ -128,7 +132,7 @@ public class FtpImgLoaderUtil2 {
             try {
                 ftpClient.logout();
                 ftpClient.disconnect();
-                log.debug("disconnecting from {}", host);
+                log.debug("disconnecting from {}", ftpProperties.getHost());
             } catch (IOException e) {
                 log.error("FTP 연결 해제 중 오류 발생: {}", e.getMessage());
             }
@@ -168,6 +172,5 @@ public class FtpImgLoaderUtil2 {
     private String convertToEnglish(String originalFileName) {
         return originalFileName.replaceAll("[^a-zA-Z0-9.]", "_");
     }
-
 
 }
