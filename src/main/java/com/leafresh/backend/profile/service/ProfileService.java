@@ -2,6 +2,7 @@ package com.leafresh.backend.profile.service;
 
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.repository.UserRepository;
+import com.leafresh.backend.oauth.service.UserService;
 import com.leafresh.backend.profile.model.dto.ProfileDTO;
 import com.leafresh.backend.profile.model.entity.ProfileEntity;
 import com.leafresh.backend.profile.repository.ProfileRepository;
@@ -13,14 +14,17 @@ import java.util.Optional;
 @Service
 public class ProfileService {
 
-    @Autowired
     private ProfileRepository profileRepository;
+    private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
+    public ProfileService(ProfileRepository profileRepository, UserService userService) {
+        this.profileRepository = profileRepository;
+        this.userService = userService;
+    }
 
     public ProfileDTO createProfile(Integer userId, ProfileDTO profileDTO) {
-        User user = userRepository.findById(userId)
+        User user = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
 
         ProfileEntity profileEntity = new ProfileEntity();
@@ -66,6 +70,29 @@ public class ProfileService {
         public Optional<ProfileDTO> findProfileByUserId(Integer userId) {
             return profileRepository.findByUserUserId(userId)
                     .map(profile -> new ProfileDTO(profile.getProfileTitle(), profile.getProfileDescription()));
+        }
+
+        public ProfileDTO findProfileByUserNickname(String userNickname) {
+            Optional<User> userEntityByNickname = userService.findByUserNickname(userNickname); // nickname으로 유저 정보 조회
+
+            if (userEntityByNickname.isPresent()) { // 유저가 존재하면
+                Integer userId = userEntityByNickname.get().getUserId(); // userId를 가져옴
+
+                Optional<ProfileEntity> findProfileEntity = profileRepository.findByUserUserId(userId); // userId로 프로필 조회
+
+                if (findProfileEntity.isPresent()) { // 값이 있으면
+                    ProfileEntity entity = findProfileEntity.get();
+                    ProfileDTO profileDTO = new ProfileDTO();
+                    profileDTO.setProfileTitle(entity.getProfileTitle());
+                    profileDTO.setProfileDescription(entity.getProfileDescription());
+
+                    return profileDTO;
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
         }
     }
 

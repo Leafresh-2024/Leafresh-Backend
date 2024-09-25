@@ -20,6 +20,7 @@ public enum SuccessCode {
 	OK(HttpStatus.OK, 200, "요청에 성공했습니다."),
 	USER_CREATED(HttpStatus.OK, 201, "회원가입에 성공했습니다."),
 	PROFILE_CREATED(HttpStatus.OK, 201, "프로필 등록에 성공했습니다."),
+	PROFILE_UPDATED(HttpStatus.OK, 201, "프로필 수정에 성공했습니다."),
 	MARKET_CREATED(HttpStatus.OK, 201, "게시글 등록에 성공했습니다."),
 	FEED_CREATED(HttpStatus.OK, 201, "피드 등록에 성공했습니다."),
 	PLANT_CREATED(HttpStatus.OK, 201, "식물 등록에 성공했습니다."),

@@ -1,5 +1,6 @@
 package com.leafresh.backend.profile.controller;
 
+import com.leafresh.backend.common.codes.SuccessCode;
 import com.leafresh.backend.oauth.model.User;
 import com.leafresh.backend.oauth.repository.UserRepository;
 import com.leafresh.backend.oauth.security.CurrentUser;
@@ -21,9 +22,9 @@ import java.util.Optional;
 public class ProfileController {
 
 
-    private ProfileService profileService;
-    private UserRepository userRepository;
-    private ProfileRepository profileRepository;
+    private final ProfileService profileService;
+    private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
     @Autowired
     public ProfileController(ProfileService profileService, UserRepository userRepository, ProfileRepository profileRepository) {
@@ -32,20 +33,25 @@ public class ProfileController {
         this.profileRepository = profileRepository;
     }
 
-
-
-
     @PostMapping("/add")
     public ResponseEntity<?> createProfile(@CurrentUser UserPrincipal userPrincipal, @RequestBody ProfileDTO profileDTO) {
-        profileService.createProfile(userPrincipal.getUserId(), profileDTO);
-        return ResponseEntity.ok().body("프로필이 성공적으로 등록되었습니다.");
+        if (profileDTO == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        ProfileDTO savedDTO = profileService.createProfile(userPrincipal.getUserId(), profileDTO);
+
+        if (savedDTO != null) { // 프로필이 잘 저장되었으면
+            return ResponseEntity.status(SuccessCode.PROFILE_CREATED.getStatus()).body(savedDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/info")
     public ResponseEntity<?> getProfileInfo(@CurrentUser UserPrincipal userPrincipal) {
         try {
             ProfileDTO profileDTO = profileService.getProfileInfo(userPrincipal.getUserId());
-            return ResponseEntity.ok(profileDTO); // 프로필 정보 반환
+            return ResponseEntity.status(SuccessCode.OK.getStatus()).body(profileDTO); // 프로필 정보 반환
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body("정보가 없습니다."); // 프로필이 없는 경우 에러 메시지 반환
         }
@@ -53,37 +59,29 @@ public class ProfileController {
 
     @PostMapping("/modify")
     public ResponseEntity<?> modifyProfile(@CurrentUser UserPrincipal userPrincipal, @RequestBody ProfileDTO profileDTO) {
-        profileService.modifyProfile(userPrincipal.getUserId(), profileDTO);
-        return ResponseEntity.ok().body("프로필이 성공적으로 수정되었습니다.");
+        if (profileDTO == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        ProfileDTO modifyDTO = profileService.modifyProfile(userPrincipal.getUserId(), profileDTO);
+
+        if (modifyDTO != null) {
+            return ResponseEntity.status(SuccessCode.PROFILE_UPDATED.getStatus()).body(modifyDTO);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/info-by-nickname")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ProfileDTO> getProfileByUserNickname(@RequestParam("nickname") String userNickname) {
-        // 1. 닉네임으로 유저 정보 조회
-        System.out.println("닉네임으로 유저 정보 조회 시도: " + userNickname);
-        Optional<User> user = userRepository.findByUserNickname(userNickname);
+        if (userNickname == null || userNickname.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+        ProfileDTO profileDTO = profileService.findProfileByUserNickname(userNickname);
 
-        if (user.isEmpty()) {  // 변경된 부분: isEmpty()로 체크
-            System.out.println("유저 정보가 존재하지 않음: " + userNickname);
+        if (profileDTO == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
-        // 2. 유저 ID로 프로필 정보 조회
-        Integer userId = user.get().getUserId();
-        System.out.println("유저 ID로 프로필 정보 조회 시도: userId=" + userId);
-        Optional<ProfileEntity> profile = profileRepository.findByUserUserId(userId);
-
-        if (profile.isPresent()) {
-            ProfileEntity profileEntity = profile.get();
-            System.out.println("프로필 정보 조회 성공: userId=" + userId +
-                    ", profileTitle=" + profileEntity.getProfileTitle() +
-                    ", profileDescription=" + profileEntity.getProfileDescription());
-            ProfileDTO profileDTO = new ProfileDTO(profileEntity.getProfileTitle(), profileEntity.getProfileDescription());
-            return ResponseEntity.ok(profileDTO);  // ProfileEntity에서 ProfileDTO로 변환 후 반환
-        } else {
-            System.out.println("프로필 정보가 존재하지 않음: userId=" + userId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.status(SuccessCode.OK.getStatus()).body(profileDTO);
     }
 }
