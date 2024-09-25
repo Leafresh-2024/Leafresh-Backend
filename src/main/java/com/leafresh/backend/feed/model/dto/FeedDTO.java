@@ -39,6 +39,4 @@ public class FeedDTO {
 	private String userName;
 
 	private String userNickname;
-
-	private String userProfileImg;
 }

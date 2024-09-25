@@ -66,8 +66,5 @@ public class FeedEntity {
 
 	@Column(name = "user_nickname")
 	private String userNickname; // 추가된 필드: user_nickname
-
-	@Column(name = "user_profile_img")
-	private String userProfileImg;
 }
 
