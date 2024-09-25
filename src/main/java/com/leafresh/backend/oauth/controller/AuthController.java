@@ -10,6 +10,7 @@ import com.leafresh.backend.oauth.repository.UserRepository;
 import com.leafresh.backend.oauth.security.UserPrincipal;
 import com.leafresh.backend.oauth.service.CustomUserDetailsService;
 import com.leafresh.backend.oauth.service.TokenProvider;
+import com.leafresh.backend.oauth.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,17 +28,18 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
     private AuthenticationManager authenticationManager;
-
-    @Autowired
     private TokenProvider tokenProvider;
-
-    @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    private UserService userService; // sv메서드 수정 이후에 제거필요 오류방지로 일단 둠**
 
     @Autowired
-    private UserRepository userRepository; // UserRepository 주입 추가
+    public AuthController(AuthenticationManager authenticationManager, TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService, UserService userService) {
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = tokenProvider;
+        this.customUserDetailsService = customUserDetailsService;
+        this.userService = userService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -53,23 +55,25 @@ public class AuthController {
         String accessToken = tokenProvider.createToken(authentication);
         String refreshToken = tokenProvider.createRefreshToken(((UserPrincipal) authentication.getPrincipal()).getUserId());
 
-        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
+        return ResponseEntity.ok(new AuthResponse(accessToken));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        if (userRepository.existsByUserMailAdress(signUpRequest.getEmail())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(false, "중복된 이메일 입니다"));
-        }else if (userRepository.existsByUserNickname(signUpRequest.getNickname())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse(false,"중복된 닉네임입니다."));
-        }else if (!signUpRequest.isTermsAgreement()) {
+        if (signUpRequest == null) {
+            throw new BadRequestException("가입 정보가 없습니다.");
+        }
+        if (!signUpRequest.isTermsAgreement()) {
             throw new BadRequestException("약관에 동의해야 합니다.");
         }
 
+        ResponseEntity<?> result = customUserDetailsService.registerUser(signUpRequest);
 
-        return customUserDetailsService.registerUser(signUpRequest);
+        if (result != null){ // 응답값이 있으면 (회원가입성공/이메일중복/닉넴중복 등)
+            return result;
+        } else {
+            throw new BadRequestException("가입에 실패했습니다. 다시 시도해주세요");
+        }
     }
 
     @PostMapping("/logout")
@@ -78,9 +82,9 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse(true, "사용자가 성공적으로 로그아웃되었습니다."));
     }
 
-    @GetMapping("/checkNickname")
+    @GetMapping("/checkNickname") // 닉네임 중복확인
     public ResponseEntity<?> checkNicknameDuplicate(@RequestParam String nickname) {
-        Boolean isNicknameDuplicate = userRepository.existsByUserNickname(nickname);
+        Boolean isNicknameDuplicate = userService.existsByUserNickname(nickname);
 
         // Response에 exists 필드로 중복 여부 반환
         return ResponseEntity.ok(Collections.singletonMap("exists", isNicknameDuplicate));
