@@ -11,6 +11,10 @@ public class AuthResponse {
         this.refreshToken = refreshToken; // 리프레시 토큰 설정
     }
 
+    public AuthResponse(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
     // Getter 메서드
     public String getAccessToken() {
         return accessToken;

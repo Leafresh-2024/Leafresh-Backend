@@ -38,6 +38,9 @@ public class TokenProvider {
 
         String token = Jwts.builder()
                 .setSubject(Integer.toString(userPrincipal.getUserId()))  // Long에서 Integer로 수정
+                .claim("userId", userPrincipal.getUserId()) // 페이로드-유저id (이거 가져와도 될까 고민중?)
+                .claim("authorities", userPrincipal.getAuthorities()) // 페이로드-권한정보
+                .claim("useremail", userPrincipal.getUsername()) // 페이로드-유저이메일
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())

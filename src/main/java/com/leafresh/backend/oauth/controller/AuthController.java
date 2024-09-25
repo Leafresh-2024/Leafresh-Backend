@@ -55,7 +55,7 @@ public class AuthController {
         String accessToken = tokenProvider.createToken(authentication);
         String refreshToken = tokenProvider.createRefreshToken(((UserPrincipal) authentication.getPrincipal()).getUserId());
 
-        return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
+        return ResponseEntity.ok(new AuthResponse(accessToken));
     }
 
     @PostMapping("/signup")

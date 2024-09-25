@@ -85,15 +85,16 @@ public class UserController {
         }
     }
 
+    // 메서드 수정함. entity 바로 반환하지 않고 sv에 메서드 만들어서 넘겼다가 받아옴
     @GetMapping("/info-by-nickname")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<?> getUserProfileByNickname(@RequestParam String nickname) {
-        User user = userRepository.findByUserNickname(nickname)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "nickname", nickname));
-        return ResponseEntity.ok(Map.of(
-                "userName", user.getUserName(),
-                "imageUrl", user.getImageUrl(),
-                "userEmail", user.getUserMailAdress()
-        ));
+        ResponseEntity findUserInfo = customUserDetailsService.loadUserByNickname(nickname);
+
+        if (findUserInfo == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(false, "닉네임으로 사용자를 조회할 수 없음"));
+        }
+
+        return findUserInfo;
     }
 }
