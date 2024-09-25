@@ -16,7 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("*") // 허용할 출처를 설정
+                .allowedOrigins("https://leafresh-frontend-alpha.vercel.app","https://leafresh-frontend-nine.vercel.app") // 허용할 출처를 설정
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
