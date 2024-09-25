@@ -7,7 +7,7 @@ import org.springframework.messaging.handler.invocation.HandlerMethodReturnValue
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
-
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 import java.util.List;
 
 @Configuration
