@@ -7,7 +7,7 @@ import org.springframework.messaging.handler.invocation.HandlerMethodReturnValue
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
-
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 import java.util.List;
 
 @Configuration
@@ -20,8 +20,9 @@ public class ChattingConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/wss") // 연결을 위한 주소 웹 소켓의 연결 형식 ws://localhost:8080/ws
-                .setAllowedOrigins("*");
+        registry.addEndpoint("/ws") // 연결을 위한 주소 웹 소켓의 연결 형식 ws://localhost:8080/ws
+                .setAllowedOrigins("https://leafresh-frontend-alpha.vercel.app", "https://leafresh-frontend-nine.vercel.app") // 허용할 출처를 명시적으로 나열
+                .withSockJS();
     }
 
 

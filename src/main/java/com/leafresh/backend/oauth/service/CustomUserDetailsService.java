@@ -65,12 +65,26 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
     }
 
+    // 새로운 메서드 추가함. con에서 유저닉네임으로 조회하는 부분 sv로 넘김
+    public ResponseEntity<?> loadUserByNickname(String nickname) {
+        User user = userRepository.findByUserNickname(nickname)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "nickname", nickname));
+
+        return ResponseEntity.ok(Map.of(
+                "userName", user.getUserName(),
+                "imageUrl", user.getImageUrl(),
+                "userEmail", user.getUserMailAdress()
+        ));
+    }
+
     @Transactional
     public ResponseEntity<?> registerUser(@Valid SignUpRequest signUpRequest) {
         if (userRepository.existsByUserMailAdress(signUpRequest.getEmail())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "이미 사용 중인 이메일입니다."));
-        } else if (userRepository.existsByUserNickname(signUpRequest.getNickname())) {
+        }
+
+        if (userRepository.existsByUserNickname(signUpRequest.getNickname())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ApiResponse(false, "이미 사용 중인 닉네임입니다."));
         }
