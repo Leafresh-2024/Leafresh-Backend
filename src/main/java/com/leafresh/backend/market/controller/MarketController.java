@@ -1,5 +1,9 @@
 package com.leafresh.backend.market.controller;
 
+import com.leafresh.backend.common.codes.ErrorCode;
+import com.leafresh.backend.common.codes.SuccessCode;
+import com.leafresh.backend.common.response.ErrorResponse;
+import com.leafresh.backend.common.response.SuccessResponse;
 import com.leafresh.backend.market.model.dto.MarketDTO;
 import com.leafresh.backend.market.service.MarketService;
 import com.leafresh.backend.oauth.security.CurrentUser;
@@ -35,15 +39,15 @@ public class MarketController {
 
     @PostMapping("/addpost")
     public ResponseEntity<?> create(@Valid @RequestBody MarketDTO marketDTO, @CurrentUser UserPrincipal userPrincipal){
-        System.out.println("컨트롤러호출");
-        System.out.println(marketDTO);
-
+        if (marketDTO == null) {
+            return ResponseEntity.status(ErrorCode.REQUEST_BODY_MISSING_ERROR.getCode()).body(ErrorCode.REQUEST_BODY_MISSING_ERROR.getMessage());
+        }
         MarketDTO createdDTO = marketService.createPost(marketDTO, userPrincipal);
 
         if (createdDTO != null) { // 게시글이 잘 저장되었으면
-            return ResponseEntity.ok(createdDTO);
+            return ResponseEntity.status(SuccessCode.MARKET_CREATED.getStatus()).body(createdDTO);
         } else {
-            return ResponseEntity.status(500).body("다시 시도해주세요");
+            return ResponseEntity.status(ErrorCode.INTERNAL_SERVER_ERROR.getStatus()).body(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         }
     }
 

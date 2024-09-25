@@ -15,11 +15,19 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class PlantController {
 
+    private final PlantService plantService;
+
     @Autowired
-    private PlantService plantService;
+    public PlantController(PlantService plantService) {
+        this.plantService = plantService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<PlantDTO> addPlant(@ModelAttribute PlantDTO plantDTO) {
+        if (plantDTO == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // ** return 수정필요
+        }
+
         try {
             PlantDTO createdPlant = plantService.savePlant(plantDTO);
             return new ResponseEntity<>(createdPlant, HttpStatus.CREATED);
