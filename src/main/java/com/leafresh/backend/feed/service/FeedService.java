@@ -123,7 +123,6 @@ public class FeedService {
 			.userId(feedDTO.getUserId())
 			.userName(feedDTO.getUserName())
 			.userNickname(feedDTO.getUserNickname())
-			.userProfileImg(feedDTO.getUserProfileImg())
 			.build();
 	}
 
@@ -140,7 +139,6 @@ public class FeedService {
 			.userId(feedEntity.getUserId())
 			.userName(feedEntity.getUserName())
 			.userNickname(feedEntity.getUserNickname())
-			.userProfileImg(feedEntity.getUserProfileImg())
 			.build();
 	}
 }

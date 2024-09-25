@@ -21,9 +21,8 @@ public class ChattingConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // 연결을 위한 주소 웹 소켓의 연결 형식 ws://localhost:8080/ws
-                .setAllowedOrigins("https://leafresh-frontend-nine.vercel.app")
-                .withSockJS()
-                .setInterceptors(new HttpSessionHandshakeInterceptor());
+                .setAllowedOrigins("https://leafresh-frontend-alpha.vercel.app", "https://leafresh-frontend-nine.vercel.app") // 허용할 출처를 명시적으로 나열
+                .withSockJS();
     }
 
 
