@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,36 @@ public class MarketService implements MarketServiceImpl {
     }
 
     @Override
+    public List<MarketDTO> myMarketList(String userNickname) {
+        Optional<User> users = userServiceImpl.findByUserNickname(userNickname); // usernickname으로 정보조회함
+
+        if (users.isPresent()) { // 유저가 있으면
+            Integer userId = users.get().getUserId(); // 원예일지 주인의 id를 가져옴
+            List<MarketEntity> marketEntities = marketRepository.findAllByUserId(userId);
+            List<MarketDTO> marketDTOList = new ArrayList<>();
+            if (marketEntities.size() > 0) {
+                for (MarketEntity entity : marketEntities) {
+                    MarketDTO dto = new MarketDTO();
+                    dto.setMarketId(entity.getMarketId());
+                    dto.setMarketCategory(entity.getMarketCategory());
+                    dto.setMarketTitle(entity.getMarketTitle());
+                    dto.setMarketContent(entity.getMarketContent());
+                    dto.setMarketImage(entity.getMarketImage());
+                    dto.setMarketStatus(entity.isMarketStatus());
+                    dto.setMarketCreatedAt(entity.getMarketCreatedAt());
+                    dto.setMarketVisibleScope(entity.getMarketVisibleScope());
+                    dto.setUserId(entity.getUserId());
+                    marketDTOList.add(dto);
+                }
+                return marketDTOList;
+            } else {
+                return Collections.emptyList();
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
     @Transactional
     public MarketDTO createPost(MarketDTO marketDTO, @CurrentUser UserPrincipal userPrincipal) {
         Integer principalUserId = userPrincipal.getUserId(); // 인증된 유저의 고유한 id 값
@@ -90,7 +121,6 @@ public class MarketService implements MarketServiceImpl {
                 return null;
             }
         } else {
-            System.out.println("로그인 한 사용자가 없습니다."); // 로그찍지말고 사용자에게 보여줄 메세지로 수정**
             return null;
         }
     }
@@ -149,12 +179,10 @@ public class MarketService implements MarketServiceImpl {
                 } else {
                     return null;
                 }
-            } else {
-                System.out.println("수정할 게시글이 존재하지 않습니다."); // 로그찍지말고 사용자에게 보여줄 메세지로 수정**
+            } else { // 수정할 게시글이 존재하지 않으면
                 return null;
             }
-        } else {
-            System.out.println("로그인 한 사용자가 없습니다."); // 로그찍지말고 사용자에게 보여줄 메세지로 수정**
+        } else { // 로그인 한 사용자가 없으면
             return null;
         }
     }
@@ -174,13 +202,11 @@ public class MarketService implements MarketServiceImpl {
                 marketEntity.setMarketVisibleScope(VisibleScope.MARKET_DELETE); // 공개범위를 MARKET_DELETE로 수정
                 marketRepository.save(marketEntity);
                 return result;
-            } else {
-                System.out.println("삭제하려는 게시글이 존재하지 않습니다."); // 로그찍지말고 사용자에게 보여줄 메세지로 수정**
+            } else { // 삭제하려는 게시글이 존재하지 않으면
                 result = 1;
                 return result;
             }
-        } else {
-            System.out.println("로그인 한 사용자가 없습니다."); // 로그찍지말고 사용자에게 보여줄 메세지로 수정**
+        } else { // 로그인 한 사용자가 없으면
             result = 1;
             return result;
         }
@@ -191,15 +217,13 @@ public class MarketService implements MarketServiceImpl {
     public int updateMarketStatus(Integer id, Boolean status) { // 분양중/분양완료 상태
         Optional<MarketEntity> marketEntity = marketRepository.findById(id);
         int result = 0;
-        System.out.println(marketEntity); // 로그지우기
 
         if (marketEntity.isPresent()) { // 게시글이 존재하면
             MarketEntity market = marketEntity.get();
             market.setMarketStatus(status); // status를 업데이트해줌
             marketRepository.save(market);
             return result;
-        } else {
-            System.out.println("게시글이 존재하지 않습니다."); // 로그찍지말고 사용자에게 보여줄 메세지로 수정**
+        } else { // 게시글이 존재하지 않으면
             result = 1;
             return result;
         }

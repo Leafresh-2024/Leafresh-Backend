@@ -111,13 +111,11 @@ public class ReplyService {
                 deleteEntity.setReplyStatus(false); // 리플상태를 false로 바꿈
                 replyRepository.save(deleteEntity);
                 return result;
-            } else {
-                System.out.println("삭제하려는 게시글이 존재하지 않음.");
+            } else { // 삭제하려는 게시글이 존재하지 않으면
                 result = 1;
                 return result;
             }
-        } else {
-            System.out.println("로그인 한 사용자가 존재하지 않음.");
+        } else { // 로그인 한 사용자가 없으면
             result = 1;
             return result;
         }
