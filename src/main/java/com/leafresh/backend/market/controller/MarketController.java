@@ -37,6 +37,22 @@ public class MarketController {
         return marketService.allMarketList();
     }
 
+    @GetMapping("/{userNickname}") // 원예일지에서 그 사람의 분양 게시글만 불러오는 api
+    public ResponseEntity<List<MarketDTO>> getMyMarkets(@PathVariable String userNickname) {
+        if (userNickname == null){
+            return null;
+        }
+        List<MarketDTO> findDTO = marketService.myMarketList(userNickname);
+
+        if (findDTO == null){
+            return null;
+        }
+        return new ResponseEntity<>(findDTO, HttpStatus.OK);
+        // url에서 닉네임을 가져와서 닉네임으로 회원정보를 조회한다
+        // 조회한 회원정보에서 id를 가져온다 (=결국 이게 원예일지 주인의 Id임)
+        // 마켓 게시글에서 그 id와 같은 게시글만 뽑아서 출력해줌
+    }
+
     @PostMapping("/addpost")
     public ResponseEntity<?> create(@Valid @RequestBody MarketDTO marketDTO, @CurrentUser UserPrincipal userPrincipal){
         if (marketDTO == null) {
@@ -73,9 +89,6 @@ public class MarketController {
 
     @PutMapping("/modify/{id}")
     public ResponseEntity<?> modify (@Valid @RequestBody MarketDTO marketDTO, @PathVariable Integer id, @CurrentUser UserPrincipal userPrincipal){
-        System.out.println("수정컨트롤핸들러");
-        System.out.println(marketDTO);
-
         if(id <= 0 || id == null) {
             return ResponseEntity.status(500).body("수정할 게시글이 없습니다.");
         }
