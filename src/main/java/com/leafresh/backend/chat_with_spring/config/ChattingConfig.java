@@ -1,5 +1,6 @@
 package com.leafresh.backend.chat_with_spring.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
@@ -13,6 +14,9 @@ import java.util.List;
 @Configuration
 @EnableWebSocketMessageBroker
 public class ChattingConfig implements WebSocketMessageBrokerConfigurer {
+    @Value("${app.cors.allowedOrigins}")
+    private String[] allowedOrigins;
+
     /**
      * STOMP 엔드포인트를 등록합니다.
      * 클라이언트가 이 엔드포인트를 통해 WebSocket 연결을 설정합니다.
@@ -20,7 +24,7 @@ public class ChattingConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // 연결을 위한 주소 웹 소켓의 연결 형식 ws://localhost:8080/ws
-                .setAllowedOrigins("https://leafresh-frontend-nine.vercel.app"); // 허용할 출처를 명시적으로 나열 
+                .setAllowedOrigins(allowedOrigins); // 허용할 출처를 명시적으로 나열
 
     }
 
