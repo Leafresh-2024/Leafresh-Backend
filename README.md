@@ -1,25 +1,25 @@
-# Leafresh - Backend
+# 🌿 Leafresh - Backend
 
 > Leafresh - Backend 프로젝트는 식물 원예 일지 플랫폼인 Leafresh의 백엔드 서버를 구성하기 위하여 설계되었습니다.
 > 
-<br/><br/>
+<br/>
 
-## 🌿 **목차**
+## **목차**
 + [기술 스택](#기술-스택)
 + [설치 방법](#설치-방법)
-+ [엔드포인트](#엔드포인트)
 + [기여 방법](#기여-방법)
 + [코드 컨벤션](#코드-컨벤션)
 + [문의 사항](#문의-사항)
 
-<br/><br/>
+<br/>
 
 ## 기술 스택
 + 언어: Java - TEMURINJDK 17
 + 프레임워크: Spring Boot - v3.3.3
 + 데이터베이스: MySQL
 + 기타 도구: Nginx, Docker, Jenkins, Gradle
-<br/><br/>
+
+<br/>
 
 ## 설치 방법
 
@@ -68,14 +68,7 @@ gradle dependencies
 
 ```
 
-<br/><br/>
-
-## 엔드포인트
-예시: 요청과 응답에 대한 예시를 제공합니다.
-API 문서
-API의 상세한 스펙과 사용 방법을 문서화합니다.
-
-<br/><br/>
+<br/>
 
 ## 기여 방법
 ### **버전 관리 규칙 (Version Control Guidelines)**
@@ -127,7 +120,7 @@ API의 상세한 스펙과 사용 방법을 문서화합니다.
     - 디폴트 브랜치에 *병합할 때에는* 생성한 도메인의 브랜치에서 dev 브랜치로 pull request 하여 병합한다. 이때 리뷰어는 최소 3명이 필요하며 승인을 받아야 한다.
     - 병합 충돌시에는 깃허브 Resolve conflicts를 이용하여 조정한다.
 
-<br/><br/>
+<br/>
 
 ## 코드 컨벤션
 
@@ -136,10 +129,12 @@ API의 상세한 스펙과 사용 방법을 문서화합니다.
 - 코드스타일은 캠퍼스 핵데이 Java 코딩 컨벤션의 스타일을 따라간다
 - [**https://naver.github.io/hackday-conventions-java/#intellij-customizing**](https://naver.github.io/hackday-conventions-java/#intellij-customizing) 의 **D.2. IntelliJ** 참고
 
-<br/><br/>
+<br/>
 
 ## 문의 사항
 
 > 프로젝트와 관련된 문의는 다음을 통해 연락주시기 바랍니다.
 
 토론 등록: [GitHub Discussions](https://github.com/orgs/Leafresh-2024/discussions)
+
+<br/>
