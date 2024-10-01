@@ -17,6 +17,7 @@
 + 언어: Java - TEMURINJDK 17
 + 프레임워크: Spring Boot - v3.3.3
 + 데이터베이스: MySQL
++ IDE Tool: IntelliJ IDEA
 + 기타 도구: Nginx, Docker, Jenkins, Gradle
 
 <br/>
